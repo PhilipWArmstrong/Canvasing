@@ -3,7 +3,7 @@ const router = express.Router();
 const Voter = require('../models/voters.js');
 
 // index route
-router.get('/canvasing', (req, res) => {
+router.get('/', (req, res) => {
     Voter.find({}, (error, foundVoters) => {
         res.render('Index', {
             voters:foundVoters
@@ -13,24 +13,28 @@ router.get('/canvasing', (req, res) => {
 });
 
 // new route
-router.get('/canvasing/new', (req, res) => {
+router.get('/new', (req, res) => {
     res.render('New');
+    res.redirect('/canvasing');
 });
 
 // create route 
-router.post('/canvasing/voter', (req, res) => {
+router.post('/voter', (req, res) => {
     if(req.body.commitToDonate === 'on') {
         req.body.commitToDonate = true;
     } else {
         req.body.commitToDonate = false;
     }
+    req.body.registered = true;
     Voter.create(req.body, (error, createdVoters) => {
-        res.redirect('/canvasing');
+        res.redirect('/');
+        // console.log(createdVoters)
+        // console.log(error)
     })
 });
 
 // show route 
-router.get('/canvasing/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     Voter.findById(req.params.id, (error, foundVoter) => {
         res.render('Show', {
             voter:foundVoter
@@ -39,14 +43,14 @@ router.get('/canvasing/:id', (req, res) => {
 });
 
 // delete route 
-router.delete('/canvasing/:id', (req, res)=>{
+router.delete('/:id', (req, res)=>{
     Voter.findByIdAndRemove(req.params.id, (err, data)=>{
         res.redirect('/canvasing');
     });
 });
 
 // edit route 
-router.get('/canvasing/:id/edit', (req, res)=>{
+router.get('/:id/edit', (req, res)=>{
     Voter.findById(req.params.id, (err, foundVoter)=>{
         res.render('Edit.jsx', {
     			voter: foundVoter
@@ -55,13 +59,14 @@ router.get('/canvasing/:id/edit', (req, res)=>{
 });
 
 // put route 
-router.put('/canvasing/:id', (req, res)=>{
+router.put('/:id', (req, res)=>{
     if(req.body.commitToDonate === 'on'){
         req.body.commitToDonate = true;
     } else {
         req.body.commitToDonate = false;
     }
-    Log.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, updateModel)=>{
+    req.body.registered = true;
+    Voter.findByIdAndUpdate(req.params.id, req.body, {new:true}, (err, updateModel)=>{
         res.redirect('/canvasing');
     });
 });

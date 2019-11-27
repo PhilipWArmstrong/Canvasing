@@ -5,7 +5,7 @@ class New extends React.Component {
         return (
             <div>
                 <h1>Add A New Voter Profile</h1>
-                <form action="/canvasing" method="POST">
+                <form action="/canvasing/voter" method="POST">
                     Name: <input type="text" name="name" /><br/>
                     Address: <input type="text" name="address" /><br/>
                     Party Affiliation: <input type="text" name="party" /><br/>
